@@ -1,0 +1,82 @@
+version: '2.4'
+services:
+
+  atlas-probe:
+    image: atlas-sw
+    build:
+      dockerfile: ./files/Dockerfile
+      context: .
+    restart: always
+    tty: true
+#    cap_drop:
+#      - ALL
+    cap_add:
+      - SYS_ADMIN
+      - CAP_NET_RAW #Ping
+      - CAP_CHOWN #Fix for chown in entrypoint-sh
+    mem_limit: 256m
+    security_opt:
+    - no-new-privileges
+    pids_limit: 1000 #9 normal use (So maximum of 991 concurrent minitoring operations)
+    #read_only: true #not yet ready
+    depends_on:
+      - ipv6nat-atlas-probe
+    tmpfs:
+     - /run
+     - /var/atlas-probe/run/
+    volumes:
+     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+     - atlas-key:/var/atlas-probe/etc/
+     - atlas-status:/var/atlas-probe/status/
+    networks:
+      atlas-probe-network:
+
+  ipv6nat-atlas-probe:
+    image: robbertkl/ipv6nat
+    restart: always
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+      - SYS_MODULE
+    security_opt:
+     - no-new-privileges
+    tmpfs: /run
+    network_mode: "host"
+    mem_limit: 256m
+    pids_limit: 10 #8 normal use
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  watchtower-atlas-probe:
+    image: containrrr/watchtower
+    restart: always
+    mem_limit: 256m
+    read_only: true
+    security_opt:
+     - no-new-privileges
+    cap_drop:
+      - ALL
+    pids_limit: 20 #6 normal use
+    #TODO: fix for the correct name
+    command: --interval 3600 --cleanup atlas-probe ipv6nat-atlas-probe watchtower-atlas-probe
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  atlas-probe-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-atlas-probe
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: ${IPV4_NETWORK:-10.10.10}.0/30
+        - subnet: ${IPV6_NETWORK:-1337:1337:1337::/64}
+
+volumes:
+  atlas-key:
+  atlas-status:
