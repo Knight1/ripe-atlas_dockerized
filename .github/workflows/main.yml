@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run a one-line script
+      run: docker-compose build
+    - name: Startup Docker Containers
+      run: docker-compose up -d
+    - name: Verify Containers are up and running
+      run: docker ps
