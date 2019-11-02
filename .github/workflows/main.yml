@@ -9,9 +9,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Show Docker Info
+      run: docker info
+    - name: Show docker-compose version
+      run: docker-compose version
     - name: Run a one-line script
       run: docker-compose build
     - name: Startup Docker Containers
       run: docker-compose up -d
-    - name: Verify Containers are up and running
+    - name: Show running Containers
       run: docker ps
+    - name:  Verify Containers are up and running
+      run: docker inspect -f '{{.State.Running}}' ripe-atlas_dockerized_atlas-probe_1
+    - name: Verify if atlas.service is running
+      run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 systemctl status atlas.service -l
+    - name: Verify if probe_key is written meaing service is fully started
+      run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 cat /var/atlas-probe/etc/probe_key | ssh-keygen -v -y -f /dev/stdin
+    - name: Verify if atlas.service tried to register the probe
+      run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 cat /var/atlas-probe/status/ssh_err.txt | grep -q 'Permission denied (publickey).' || exit 1
