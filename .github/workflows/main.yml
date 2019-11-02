@@ -13,6 +13,8 @@ jobs:
       run: docker info
     - name: Show docker-compose version
       run: docker-compose version
+    - name: Some testing
+      run: ip a && date && uname -a && lsb_release -a && cat /etc/resolv.conf && ip route
     - name: Build Dockerfile
       run: docker-compose build
     - name: Startup Docker Containers
