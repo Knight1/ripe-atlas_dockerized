@@ -35,9 +35,7 @@ jobs:
       run: docker volume ls
     - name: Inspect Key Volume
       run: docker volume inspect ripe-atlas_dockerized_atlas-key
-    - name: Github Actions is strange i can't look into the mountpoint, further testing
-      run: cd /var && ls -lsah . && cd lib && ls -lsah . && cd docker && ls -lsah .&& cd volumes && ls -lsah . && cd ripe-atlas_dockerized_atlas-key && ls -lsah . && cd _data
     - name: Docker show Key Volume Content
-      run: docker volume inspect --format '{{ .Mountpoint }}' ripe-atlas_dockerized_atlas-key | xargs ls -lsah
+      run: docker volume inspect --format '{{ .Mountpoint }}' ripe-atlas_dockerized_atlas-key | xargs sudo ls -lsah
     - name: Seems that github Actions is not allowing SSH outging.
       run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 cat /var/atlas-probe/status/ssh_err.txt
