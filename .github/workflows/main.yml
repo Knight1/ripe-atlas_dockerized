@@ -1,4 +1,4 @@
-name: CI
+name: CI test pipeline
 
 on: [push]
 
@@ -14,7 +14,7 @@ jobs:
     - name: Show docker-compose version
       run: docker-compose version
     - name: Some testing
-      run: ip a && date && uname -a && lsb_release -a && cat /etc/resolv.conf && ip route
+      run: ip a && date && uname -a && lsb_release -a && cat /etc/resolv.conf && ip route && whoami && ping 1.1.1.1 -c 1
     - name: Build Dockerfile
       run: docker-compose build
     - name: Startup Docker Containers
@@ -23,18 +23,20 @@ jobs:
       run: docker ps
     - name: Inspect Ripe Container
       run: docker inspect ripe-atlas_dockerized_atlas-probe_1
-    - name:  Verify Containers are up and running
+    - name:  Verify Container is up and running
       run: docker inspect -f '{{.State.Running}}' ripe-atlas_dockerized_atlas-probe_1
-    - name: Verify if atlas.service is running
-      run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 systemctl status atlas.service -l
+    - name: Sleep 5 secs for systemctl startup & verify if atlas.service is running
+      run: sleep 5 && docker exec -t ripe-atlas_dockerized_atlas-probe_1 systemctl status atlas.service -l
     - name: Verify if probe_key is written meaing service is fully started
       run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 cat /var/atlas-probe/etc/probe_key | ssh-keygen -v -y -f /dev/stdin
-    - name: ls
+    - name: ls -lsah
       run: docker exec -t ripe-atlas_dockerized_atlas-probe_1 ls -lsah /var/atlas-probe/
     - name: show Volumes
       run: docker volume ls
     - name: Inspect Key Volume
       run: docker volume inspect ripe-atlas_dockerized_atlas-key
+    - name: Github Actions is strange i can't look into the mountpoint, further testing
+      run: cd /var && ls -lsah . && cd lib && ls -lsah . && cd docker && ls -lsah .&& cd volumes && ls -lsah . && cd ripe-atlas_dockerized_atlas-key && ls -lsah . && cd _data
     - name: Docker show Key Volume Content
       run: docker volume inspect --format '{{ .Mountpoint }}' ripe-atlas_dockerized_atlas-key | xargs ls -lsah
     - name: Seems that github Actions is not allowing SSH outging.
