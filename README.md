@@ -1,5 +1,7 @@
 ## The Important things
 
+![](https://github.com/Knight1/ripe-atlas_dockerized/workflows/CI%20test%20pipeline/badge.svg)
+
 Feel free to submit Pull Requests and Issues or reach out to me :-)
 
 ### Requirements
