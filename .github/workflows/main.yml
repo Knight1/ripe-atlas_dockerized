@@ -14,7 +14,7 @@ jobs:
     - name: Show docker-compose version
       run: docker-compose version
     - name: Some testing
-      run: ip a && date && uname -a && lsb_release -a && cat /etc/resolv.conf && ip route && whoami && ping 1.1.1.1 -c 1
+      run: ip a && date && uname -a && lsb_release -a && cat /etc/resolv.conf && ip route && whoami && cat /etc/apt/sources.list
     - name: Build Dockerfile
       run: docker-compose build
     - name: Startup Docker Containers
