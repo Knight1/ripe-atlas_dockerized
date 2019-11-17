@@ -12,8 +12,7 @@ Feel free to submit Pull Requests and Issues or reach out to me :-)
 ### Problems
 
 - This is a full Linux Operating System
-- The main os is running with root (id=1) but atlas.service is running with atlas (id=10042)
-
+- The main os is running with root (id=1) but atlas.service is running with atlas (id=10042) not perfect but better then nothing :(
 
 ### Todo
 
@@ -21,8 +20,10 @@ Feel free to submit Pull Requests and Issues or reach out to me :-)
  - watchtower is useless at this stage
  - good CPU Limits
  - Autobackup RSA Key
- - Figure out what files and folders are meant to stay
+ - Actions (Schedule, Issues & PR, Update when Upstream Package is updated)
+ - make centos7 read_only
 
 # Waiting for more OS support
  - [] Change to lightweight main OS
  - [] Add Arm64 support and put it into manifest list
+ - Update to CentOS 8

@@ -78,5 +78,9 @@ networks:
         - subnet: ${IPV6_NETWORK:-1337:1337:1337::/64}
 
 volumes:
+  #Primary RSA Key
   atlas-key:
+  #Logs
   atlas-status:
+  #Messurements not yet uploaded
+  atlas-data:

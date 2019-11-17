@@ -13,6 +13,8 @@ RUN set -x ;\
     yum install ripe-atlas-repo-1-2.el7.noarch.rpm -y ;\
     rm -f ripe-atlas-repo-1-2.el7.noarch.rpm ;\
     yum install atlasswprobe openssh-clients iproute sysvinit-tools net-tools -y ;\
+    yum clean all ;\
+    rm -rf /var/lib/rpm ;\
     # Fixes for systemctl
     (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
     rm -f /lib/systemd/system/multi-user.target.wants/* ;\
@@ -22,9 +24,7 @@ RUN set -x ;\
     rm -f /lib/systemd/system/sockets.target.wants/*initctl* ;\
     rm -f /lib/systemd/system/basic.target.wants/* ;\
     rm -f /lib/systemd/system/anaconda.target.wants/* ;\
-    systemctl enable atlas.service ;\
-    yum clean all ;
-    #echo "REG_1_HOST=193.0.19.246" > /var/atlas-probe/bin/reg_servers.sh ;
+    systemctl enable atlas.service ;
 
 VOLUME [ "/sys/fs/cgroup" ]
 
